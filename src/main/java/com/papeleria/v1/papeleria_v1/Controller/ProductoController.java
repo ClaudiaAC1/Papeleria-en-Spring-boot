@@ -1,63 +1,97 @@
 package com.papeleria.v1.papeleria_v1.Controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.papeleria.v1.papeleria_v1.Repository.ProductoRepository;
-import com.papeleria.v1.papeleria_v1.model.ProductoModel;
+import com.papeleria.v1.papeleria_v1.model.Producto;
 
-@RestController
-@RequestMapping("/v1/producto")
+@Controller
+public class ProductoController {
 
-public class ProductoController{
+  @Autowired
+  private ProductoRepository productoRepository;
 
-    @Autowired
-    private ProductoRepository productoRepository;
+  @GetMapping(value = "/addProduct")
+  public String agregarProducto(Model model) {
+    model.addAttribute("producto", new Producto());
+    
+    return "Productos/agregar";
+  }
 
-    /**
-     * Lista de productos
-     * @return 
-     */
-    @GetMapping(path = "/")
-    public Iterable<ProductoModel> getProducts(){
-        return productoRepository.findAll();        
+  /**
+   * Lista de productos
+   * 
+   * @param modelo
+   * @return vista con tabla de productos
+   */
+  @GetMapping("/list")
+  public String getProducts(Model modelo) {
+    modelo.addAttribute("productos", productoRepository.findAll());
+    return "Productos/listProduct";
+  }
+
+ 
+  /**
+   * Agregar un nuevo producto a la BD
+   * 
+   * @param modelo
+   * @return
+   */
+  @PostMapping(path = "/addProduct")
+  public String addProduct(@ModelAttribute @Validated Producto producto, BindingResult bindingResult,
+      RedirectAttributes redirectAttrs) {
+    if (bindingResult.hasErrors()) {
+      return "/addProduct";
     }
 
-    /**
-     * Agregar producto
-     * @return 
-     */
+    if (productoRepository.findProductoByNombre(producto.getNombre()) != null) {
+      redirectAttrs
+              .addFlashAttribute("mensaje", "Ya existe un producto con ese nombre")
+              .addFlashAttribute("clase", "warning");
+      return "redirect:/productos/addProduct";
+  }
 
-     @PostMapping (path ="/")
-     public String addProduct(@RequestBody ProductoModel producto){
-        productoRepository.save(producto);
-        return "AGREGADO"; 
-     }
+    productoRepository.save(producto);
+    redirectAttrs
+                .addFlashAttribute("mensaje", "Agregado correctamente")
+                .addFlashAttribute("clase", "success");
+        return "redirect:/addProduct";
+  }
 
-     /**
-      * Editar/Actualizar producto
-      */
+  /**
+   * Editar producto seleccionado 
+   * @param id
+   * @param model
+   * @return
+   */
+  @GetMapping(value = "/editar/{id}")
+  public String formularioEditar(@PathVariable int id, Model model) {
+      model.addAttribute("producto", productoRepository.findById(id).orElse(null));
+      return "Productos/editar";
+  }
 
-      @PutMapping(path = "/update/{id}")
-      public String updateProduct(@RequestBody ProductoModel producto, @PathVariable Integer id){
-        ProductoModel p =  productoRepository.findById(id).get();
-       
-        p.setNombre(producto.getNombre());
-        p.setCantidad(producto.getCantidad());
-        p.setUrl_img(producto.getUrl_img());
-        p.setPrecioProvedor(producto.getPrecioProvedor());
-        p.setPrecioPublico(producto.getPrecioPublico());
+  @PostMapping(value = "/editar/{id}")
+  public String actualizarProducto(@ModelAttribute @Validated Producto producto, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    if (bindingResult.hasErrors()) {
+      return "Productos/editar";
+    }
+    productoRepository.save(producto);
+    redirectAttrs
+            .addFlashAttribute("mensaje", "Editado correctamente")
+            .addFlashAttribute("clase", "success");
+    return "redirect:/list";
+}
 
-        productoRepository.save(p);
-        return "ACTUALIZADO CORRACTAMENTE";
-      }
 
+ 
 
 }

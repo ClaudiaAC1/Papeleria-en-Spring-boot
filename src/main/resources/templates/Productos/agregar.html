@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- LINK BOOTSTRAP'S -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+            crossorigin="anonymous">
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+            integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
+            integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
+            crossorigin="anonymous"></script>
+
+
+        <!-- link local -->
+        <link rel="stylesheet"  th:href="@{/js/validationForm.js}" >
+        <title>LISTA DE PRODUCTOS</title>
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand px-5" href="#">PAPELERIA CRISTAL</a>
+                <button class="navbar-toggler" type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasDarkNavbar"
+                    aria-controls="offcanvasDarkNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end text-bg-dark"
+                    tabindex="-1" id="offcanvasDarkNavbar"
+                    aria-labelledby="offcanvasDarkNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title"
+                            id="offcanvasDarkNavbarLabel">MENU</h5>
+                        <button type="button" class="btn-close
+                            btn-close-white" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end
+                            flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link active"
+                                    th:href="@{/list}">Productos</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link "
+                                    th:href="@{/vender}">Vender</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link "
+                                    th:href="@{/ventas}">Ventas</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <header style="padding: 5em;">
+            <h4>AGREGAR DE PRODUCTO</h4>
+
+            <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
+             th:text="${mensaje}"
+             class="alert">
+        </div>
+        </header>
+
+        <section class="py-2 px-2 " >
+            <div class="card p-2">
+                <form  th:object="${producto}" th:action="@{/addProduct}" method="post" class="row g-3 needs-validation card-body" novalidate >
+                    <div class="col-md-6">
+                      <label for="validationCustom01" class="form-label">Nombre del Producto: </label>
+                      <input type="text" class="form-control" id="validationCustom01" th:field="*{nombre}" required>
+                      <div class="valid-feedback">
+                        Rellenado correctamente!
+                      </div>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <label for="validationCustom02" class="form-label">Cantidad: </label>
+                        <input type="text" class="form-control" id="validationCustom02" th:field="*{cantidad}" required>
+                        <div class="valid-feedback">
+                            Rellenado correctamente!
+                        </div>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <label for="validationCustom03" class="form-label">Precio de Proveedor: </label>
+                        <input type="text" class="form-control" id="validationCustom03" th:field="*{precioProvedor}" required>
+                        <div class="valid-feedback">
+                          Rellenado correctamente!
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="validationCustom04" class="form-label">Precio publico: </label>
+                        <input type="text" class="form-control" id="validationCustom04" th:field="*{precioPublico}" required>
+                        <div class="valid-feedback">
+                          Rellenado correctamente!
+                        </div>
+                    </div>
+    
+                    <div class="col-12">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                        <label class="form-check-label" for="invalidCheck">
+                          ¿Datos ingresados correctos?
+                        </label>
+                        <div class="invalid-feedback">
+                          Es necesario seleccionar para registrar el producto correctamente.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary" type="submit">Guardar</button>
+                      <a class="btn btn-warning" th:href="@{/list}">Cancelar</a>
+                    
+                    </div>
+                </form>
+            </div>
+             
+        </section>
+
+        <footer class="px-2 py-2 fixed-bottom bg-dark"
+            xmlns:th="http://www.w3.org/1999/xhtml">
+            <span class="text-muted">Sistema web Elaborado por Claudia Anaya Carreño
+            </span>
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", () => {
+                    const menu = document.querySelector("#menu"),
+                        botonMenu = document.querySelector("#botonMenu");
+                    if (menu) {
+                        botonMenu.addEventListener("click", () => menu.classList.toggle("show"));
+                    }
+                });
+            </script>
+        </footer>
+
+        <script>
+            (() => {
+                'use strict'
+            
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                const forms = document.querySelectorAll('.needs-validation')
+            
+                // Loop over them and prevent submission
+                Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    }
+            
+                    form.classList.add('was-validated')
+                }, false)
+                })
+            })()
+        </script>
+    </body>
+</html>

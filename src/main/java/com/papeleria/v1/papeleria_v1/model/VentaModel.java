@@ -1,14 +1,16 @@
 package com.papeleria.v1.papeleria_v1.model;
 
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.papeleria.v1.papeleria_v1.Entity.FechaYhora;
 
 @Entity
 @Table(name = "Venta")
@@ -19,30 +21,24 @@ public class VentaModel {
     private Integer id;
     private String fecha;
     private String descripcion;
-    private float total;
     
-    @ManyToMany
-    @JoinTable(name="venta_productos",
-    joinColumns = @JoinColumn(name= "venta_id"),
-    inverseJoinColumns = @JoinColumn(name= "producto_id"))
-    
-    private Set<ProductoModel> productos;
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    private Set<ProductoVendido> productos;
 
-    public VentaModel(){}
-       
-    public VentaModel(String fecha, String descripcion, float total) {
-        this.fecha = fecha;
-        this.descripcion = descripcion;
-        this.total = total;
+    public VentaModel(){
+        this.fecha = FechaYhora.obtenerFechaYHoraActual();
     }
-
-    
-    public VentaModel(Integer id, String fecha, String descripcion, float total, Set<ProductoModel> productos) {
+       
+    public VentaModel(Integer id, String fecha, String descripcion, Set<ProductoVendido> productos) {
         this.id = id;
         this.fecha = fecha;
         this.descripcion = descripcion;
-        this.total = total;
         this.productos = productos;
+    }
+
+    public VentaModel(String fecha, String descripcion) {
+        this.fecha = fecha;
+        this.descripcion = descripcion;
     }
 
     public Integer getId() {
@@ -52,30 +48,31 @@ public class VentaModel {
         this.id = id;
     }
 
-    //Modificar la fecha para que sea automatica
     public String getFecha() {
         return fecha;
     }
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
-    ///////
+    
     public String getDescripcion() {
         return descripcion;
     }
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    public float getTotal() {
+    public Float getTotal() {
+        Float total=0.0f;
+        for (ProductoVendido productoVendido : this.productos) {
+            total += productoVendido.getTotal();
+        }
         return total;
     }
-    public void setTotal(float total) {
-        this.total = total;
-    }
-    public Set<ProductoModel> getProductos() {
+   
+    public Set<ProductoVendido> getProductos() {
         return productos;
     }
-    public void setProductos(Set<ProductoModel> productos) {
+    public void setProductos(Set<ProductoVendido> productos) {
         this.productos = productos;
     }
   

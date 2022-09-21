@@ -10,26 +10,35 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Producto")
 
-public class ProductoModel {
+public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String nombre;
-    private int cantidad; 
-    private double  precioProvedor; 
-    private double  precioPublico; 
-    private String url_img;
+    private Float cantidad; 
+    private Float  precioProvedor; 
+    private Float  precioPublico; 
+   
 
     
-    public ProductoModel(){}
+    public Producto(){}
 
-    public ProductoModel(String nombre, int cantidad, double precioProvedor, double precioPublico, String url_img) {
+    
+    public Producto(Integer id, String nombre, Float cantidad, Float precioProvedor, Float precioPublico) {
+        this.id = id;
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precioProvedor = precioProvedor;
         this.precioPublico = precioPublico;
-        this.url_img = url_img;
+    }
+
+
+    public Producto(String nombre, Float cantidad, Float precioProvedor, Float precioPublico) {
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+        this.precioProvedor = precioProvedor;
+        this.precioPublico = precioPublico;
     }
    
     public Integer getId() {
@@ -40,8 +49,10 @@ public class ProductoModel {
         this.id = id;
     }
 
-
-    public int getCantidad(){
+    public void restarCantidad(Float existencia) {
+        this.cantidad -= existencia;
+    }
+    public Float getCantidad(){
         return cantidad;
     }
 
@@ -49,36 +60,31 @@ public class ProductoModel {
         return nombre;
     }
 
-    public double getPrecioProvedor(){
+    public Float getPrecioProvedor(){
         return precioProvedor;
     }
 
-    public double getPrecioPublico(){
+    public Float getPrecioPublico(){
         return precioPublico;
     }
 
-    public String getUrl_img(){
-        return url_img;
-    }
+    
 
-    public void setCantidad(final int cantidad){
+    public void setCantidad(Float cantidad){
         this.cantidad=cantidad;
     }
 
-    public void setNombre(final String nombre){
+    public void setNombre(String nombre){
         this.nombre=nombre;
     }
 
-    public void setPrecioProvedor(final double precioProvedor){
+    public void setPrecioProvedor(Float precioProvedor){
         this.precioProvedor=precioProvedor;
     }
 
-    public void setPrecioPublico(final double precioPublico){
+    public void setPrecioPublico(Float precioPublico){
         this.precioPublico=precioPublico;
     }
 
-    public void setUrl_img(final String url_img){
-        this.url_img=url_img;
-    }
-   
+    
 }
